@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions
+from django.contrib.auth.models import User
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
 from django_cognito_jwt.validator import TokenError, TokenValidator
@@ -29,7 +30,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             raise exceptions.AuthenticationFailed()
 
         USER_MODEL = self.get_user_model()
-        user = USER_MODEL.objects.get_or_create_for_cognito(jwt_payload)
+        user = User.objects.get_or_create(username='whatever')[0]
         return (user, jwt_token)
 
     def get_user_model(self):
